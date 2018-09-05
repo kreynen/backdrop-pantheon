@@ -151,13 +151,6 @@ class Layout {
   var $in_progress;
 
   /**
-   * The display renderer class used to handle this layout.
-   *
-   * @var string
-   */
-  var $renderer_name = 'standard';
-
-  /**
    * An array of LayoutContext instances used by this menu item.
    *
    * @var LayoutContext[]
@@ -238,7 +231,6 @@ class Layout {
       'name' => $this->name,
       'title' => $this->title,
       'description' => $this->description,
-      'renderer_name' => $this->renderer_name,
       'module' => $this->module,
       'weight' => $this->weight,
       'storage' => $this->storage,

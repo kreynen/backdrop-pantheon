@@ -325,8 +325,8 @@ function update_fix_requirements() {
     }
 
     // Empty a few basic caches.
-    db_truncate('cache')->execute();
-    db_truncate('cache_bootstrap')->execute();
+    db_query('TRUNCATE {cache}');
+    db_query('TRUNCATE {cache_bootstrap}');
 
     state_set('update_backdrop_requirements', TRUE);
   }

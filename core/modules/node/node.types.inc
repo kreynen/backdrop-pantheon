@@ -89,13 +89,6 @@ function node_type_form($form, &$form_state, $type = NULL) {
   // Make the type object available to implementations of hook_form_alter().
   $form['#node_type'] = $type;
 
-  // Create the body field by default on form submission. This may be altered by
-  // other modules.
-  $form['body'] = array(
-    '#type' => 'value',
-    '#value' => TRUE,
-  );
-
   $form['name'] = array(
     '#title' => t('Name'),
     '#type' => 'textfield',
@@ -170,24 +163,11 @@ function node_type_form($form, &$form_state, $type = NULL) {
     '#type' => 'radios',
     '#title' => t('Default status'),
     '#options' => array(
-      NODE_PUBLISHED => t('Published'),
-      NODE_NOT_PUBLISHED => t('Draft'),
-      NODE_SCHEDULED => t('Schedule for later'),
+      1 => t('Published'),
+      0 => t('Unpublished'),
     ),
-    '#default_value' => $type->settings['status_default'],
-    '#description' => t('Content saved as draft is only accessible to the content creator or site administrators.') . ' ' . t('Content set to "Schedule for later" will be saved as draft when the content is created, but will be automatically published on the date and time selected.'),
-    '#required' => TRUE,
-  );
-  $form['workflow']['status_default'][NODE_SCHEDULED]['#states'] = array(
-    'visible' => array(
-      'input[name="scheduling_enabled"]' => array('checked' => TRUE),
-    ),
-  );
-
-  $form['workflow']['scheduling_enabled'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Show option for scheduling'),
-    '#default_value' => $type->settings['scheduling_enabled'],
+    '#default_value' => (int) $type->settings['status_default'],
+    '#description' => t('Unpublished content is only accessible to the content creator or site administrators.')
   );
 
   if (module_exists('language')) {
@@ -403,6 +383,7 @@ function node_type_form_submit($form, &$form_state) {
       $type->settings[$key] = $value;
     }
   }
+
   $status = node_type_save($type);
   menu_rebuild();
 
@@ -428,9 +409,7 @@ function node_type_form_submit($form, &$form_state) {
       }
       user_role_grant_permissions($role->name, $valid_perms);
     }
-    if ($form_state['values']['body']) {
-      node_add_body_field($type);
-    }
+    node_add_body_field($type);
     backdrop_set_message(t('The content type %name has been added.', array('%name' => $type->name)));
     watchdog('node', 'Added content type %name.', array('%name' => $type->name), WATCHDOG_NOTICE, l(t('view'), 'admin/structure/types'));
   }
@@ -544,8 +523,7 @@ function node_node_type_load(&$types) {
   foreach ($types as $type_name => $type) {
     $types[$type_name]->settings += array(
       // Basic workflow settings.
-      'status_default' => NODE_PUBLISHED,
-      'scheduling_enabled' => TRUE,
+      'status_default' => TRUE,
       'promote_enabled' => TRUE,
       'promote_default' => FALSE,
       'sticky_enabled' => TRUE,
@@ -565,14 +543,7 @@ function node_node_type_load(&$types) {
       // See node_permissions_get_configured_types().
       'node_permissions' => TRUE,
     );
-
-    // Ensure Boolean statuses are converted to use the node (integer) constants
-    // of NODE_PUBLISHED and NODE_NOT_PUBLISHED.
-    if (isset($type->settings['status_default'])) {
-      $types[$type_name]->settings['status_default'] = (int) $type->settings['status_default'];
-    }
   }
-
 }
 
 /**

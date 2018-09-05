@@ -77,13 +77,6 @@ class Node extends Entity {
   public $changed;
 
   /**
-   * The timestamp at which this content should be automatically published.
-   *
-   * @var integer
-   */
-  public $scheduled;
-
-  /**
    * The node comment status indicator.
    *
    * COMMENT_NODE_HIDDEN => no comments

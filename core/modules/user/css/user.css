@@ -36,24 +36,9 @@
 }
 
 /**
- * Password toggle.
- */
-.password-toggle-wrapper {
-  position: relative;
-  display: inline-block;
-  max-width: 100%;
-}
-.password-toggle {
-  right: 0;
-  position: absolute;
-  font-size: 80%;
-  top: -2em;
-}
-
-/**
  * Password strength indicator.
  */
-.password-strength-wrapper {
+.password-confirm-wrapper {
   position: relative;
   display: inline-block;
   max-width: 100%;
@@ -111,10 +96,6 @@
 .password-strength.strong .password-strength-text {
   color: #008000;
 }
-
-/**
- * Password confirmation field.
- */
 .password-match {
   display: block;
 }

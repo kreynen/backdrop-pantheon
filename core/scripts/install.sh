@@ -141,7 +141,10 @@ $settings = array(
       'account' => array(
         'name' => $options['account-name'],
         'mail' => $options['account-mail'],
-        'pass' => $options['account-pass'],
+        'pass' => array(
+          'pass1' => $options['account-pass'],
+          'pass2' => $options['account-pass'],
+        ),
       ),
       'update_status_module' => array(
         1 => TRUE,

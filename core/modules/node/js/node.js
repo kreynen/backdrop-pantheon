@@ -18,15 +18,8 @@ Backdrop.behaviors.nodeFieldsetSummaries = {
     });
 
     $('fieldset.node-form-author', context).backdropSetSummary(function (context) {
-      var name = $('.form-item-name input', context).val() || Backdrop.settings.anonymous;
-      var dateParts = [];
-      $('.form-item-date input', context).each(function() {
-        var datePart = $(this).val();
-        if (datePart) {
-          dateParts.push(datePart);
-        }
-      });
-      var date = dateParts.join(' ');
+      var name = $('.form-item-name input', context).val() || Backdrop.settings.anonymous,
+        date = $('.form-item-date input', context).val();
       return date ?
         Backdrop.t('By @name on @date', { '@name': name, '@date': date }) :
         Backdrop.t('By @name', { '@name': name });
@@ -35,29 +28,13 @@ Backdrop.behaviors.nodeFieldsetSummaries = {
     $('fieldset.node-form-options', context).backdropSetSummary(function (context) {
       var vals = [];
 
-      // Status radio button.
-      var $status = $(context).find('input[name="status"]:checked');
-      if ($status.val() == 2) {
-        var dateParts = [];
-        $('.form-item-scheduled input', context).each(function() {
-          var datePart = $(this).val();
-          if (datePart) {
-            dateParts.push(datePart);
-          }
-        });
-        var date = dateParts.join(' ');
-        vals.push(Backdrop.t('Scheduled for @date', { '@date': date }));
-      }
-      else {
-        var statusLabel = $status.parent().text();
-        vals.push(Backdrop.checkPlain($.trim(statusLabel)));
-      }
-
-      // Other checkboxes like Promoted and Sticky.
-      $(context).find('input:checked').not($status).parent().each(function () {
+      $('input:checked', context).parent().each(function () {
         vals.push(Backdrop.checkPlain($.trim($(this).text())));
       });
 
+      if (!$('.form-item-status input', context).is(':checked')) {
+        vals.unshift(Backdrop.t('Not published'));
+      }
       return vals.join(', ');
     });
   }

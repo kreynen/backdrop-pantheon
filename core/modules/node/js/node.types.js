@@ -14,8 +14,12 @@ Backdrop.behaviors.contentTypes = {
     // Publishing settings.
     $context.find('#edit-workflow').backdropSetSummary(function() {
       var vals = [];
-      var defaultStatus = $context.find('input[name="status_default"]:checked').parent().text();
-      vals.push(Backdrop.checkPlain($.trim(defaultStatus)));
+      if (parseInt($context.find('input[name="status_default"]:checked').val())) {
+        vals.push(Backdrop.t('Published'));
+      }
+      else {
+        vals.push(Backdrop.t('Unpublished'));
+      }
       if ($context.find('input[name="sticky_default"]:checked').length) {
         vals.push(Backdrop.t('Sticky'));
       }
@@ -25,14 +29,6 @@ Backdrop.behaviors.contentTypes = {
       return vals.join(', ');
     });
 
-    // Uncheck the "Schedule for later" option if scheduling is disabled.
-    $context.find('input[name="scheduling_enabled"]').once().on('change', function() {
-      var $checkedStatusDefault = $context.find('input[name="status_default"]:checked');
-      if ($checkedStatusDefault.val() === '2') {
-        $checkedStatusDefault.prop('checked', false);
-        $context.find('input[name="status_default"]:first').prop('checked', true);
-      }
-    });
 
     // Revision settings.
     $context.find('#edit-revision').backdropSetSummary(function() {
@@ -106,7 +102,7 @@ Backdrop.behaviors.contentTypes = {
 
     // Focus the input#edit-path-pattern field when clicking on the token
     // browser on the /admin/structure/types/add pages (add a content type).
-    $context.find('#edit-path .token-browser-link').once().on('click', function(){
+    $context.find('#edit-path .token-browser-link').click(function(){
       $('input#edit-path-pattern').focus();
     });
   }

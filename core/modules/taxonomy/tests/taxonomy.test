@@ -459,15 +459,13 @@ class TaxonomyLegacyTestCase extends TaxonomyWebTestCase {
     $langcode = LANGUAGE_NONE;
     $edit = array();
     $edit['title'] = $this->randomName();
-    $edit['date[date]'] = '1969-01-01';
-    $edit['date[time]'] = '00:00:00';
+    $edit['date'] = '1969-01-01 00:00:00 -0500';
     $edit["body[$langcode][0][value]"] = $this->randomName();
     $edit["field_tags[$langcode]"] = $this->randomName();
     $this->backdropPost('node/add/post', $edit, t('Save'));
     // Checks that the node has been saved.
     $node = $this->backdropGetNodeByTitle($edit['title']);
-    $date = new BackdropDateTime('1969-01-01 00:00:00', $this->admin_user->timezone);
-    $this->assertEqual($node->created, $date->format('U'), 'Legacy node was saved with the right date.');
+    $this->assertEqual($node->created, strtotime($edit['date']), 'Legacy node was saved with the right date.');
   }
 
 }
